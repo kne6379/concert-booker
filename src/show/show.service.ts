@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { includes } from 'lodash';
 import { parse } from 'papaparse';
 import { DataSource, Repository } from 'typeorm';
 
@@ -16,6 +16,7 @@ import { Category } from './entities/category.entity';
 import { promises } from 'dns';
 import { CreateShowDateDto } from './dto/create-showdate.dto';
 import { Showdate } from './entities/showdate.entity';
+import { CATEGORY } from './types/showRole.type';
 
 @Injectable()
 export class ShowService {
@@ -41,7 +42,7 @@ export class ShowService {
       const category = await queryRunner.manager.findOneBy(Category, {
         category: createShowDto.category,
       });
-      if (!category) {
+      if (_.isNil(category)) {
         throw new BadRequestException('존재하지 않는 카테고리입니다.');
       }
       const showData = await queryRunner.manager.save(Show, {
@@ -67,5 +68,34 @@ export class ShowService {
     } finally {
       await queryRunner.release();
     }
+  }
+  async findShow(category: CATEGORY, title: string) {
+    const data = await this.showRepository.find({
+      where: { deletedAt: null, category: { category }, title },
+      relations: ['category'],
+    });
+    if (_.isNil(data)) {
+      throw new BadRequestException('등록된 공연 정보가 없습니다.');
+    }
+    return data;
+  }
+
+  //   async findShowTitle(query) {
+  //     let data = this.showRepository.find({
+  //       where: { deletedAt: null, category: query },
+  //       relations: ['category'],
+  //     });
+  //     if (_.isNil(data)) {
+  //       throw new BadRequestException('등록된 공연 정보가 없습니다.');
+  //     }
+  //     return data;
+  //   }
+
+  async findByShowId(id) {
+    const data = this.showRepository.findOne({
+      where: { id },
+      relations: ['showdates'],
+    });
+    return data;
   }
 }

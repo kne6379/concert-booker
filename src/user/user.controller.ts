@@ -29,7 +29,7 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
-  getEmail(@UserInfo() user: User) {
+  getProfile(@UserInfo() user: User) {
     return user;
   }
 }

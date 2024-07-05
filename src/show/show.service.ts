@@ -1,19 +1,13 @@
 import _, { includes } from 'lodash';
 import { parse } from 'papaparse';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateShowDto } from './dto/create-show.dto';
 import { Show } from './entities/show.entity';
 import { Category } from './entities/category.entity';
-import { promises } from 'dns';
 import { CreateShowDateDto } from './dto/create-showdate.dto';
 import { Showdate } from './entities/showdate.entity';
 import { CATEGORY } from './types/showRole.type';
@@ -70,13 +64,28 @@ export class ShowService {
     }
   }
   async findShow(category: CATEGORY, title: string) {
-    const data = await this.showRepository.find({
-      where: { deletedAt: null, category: { category }, title },
+    let condition = {};
+    if (title) {
+      condition = { title: Like(`${title}%`) };
+    }
+    let data = await this.showRepository.find({
+      where: {
+        deletedAt: null,
+        category: { category },
+        ...condition,
+      },
       relations: ['category'],
     });
     if (_.isNil(data)) {
       throw new BadRequestException('등록된 공연 정보가 없습니다.');
     }
+    console.log(data);
+    data.map((show) => {
+      id = show.id;
+    });
+    // data.map((show) => {
+    //   show.id, show.title, show.description, show.address, show.imgUrl;
+    // });
     return data;
   }
 

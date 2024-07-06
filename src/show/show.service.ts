@@ -11,6 +11,8 @@ import { Category } from './entities/category.entity';
 import { CreateShowDateDto } from './dto/create-showdate.dto';
 import { Showdate } from './entities/showdate.entity';
 import { CATEGORY } from './types/showRole.type';
+import { CreateGradeDto } from 'src/seat/dto/create-grade.dto';
+import { SeatGrade } from 'src/seat/entities/seat-grade.entity';
 
 @Injectable()
 export class ShowService {
@@ -21,11 +23,14 @@ export class ShowService {
     private readonly categoryRepository: Repository<Category>,
     @InjectRepository(Showdate)
     private readonly showdateRepository: Repository<Showdate>,
+    @InjectRepository(SeatGrade)
+    private readonly seatGradeRepository: Repository<SeatGrade>,
     private dataSource: DataSource,
   ) {}
   async createShow(
     createShowDto: CreateShowDto,
     createShowDateDtos: CreateShowDateDto[],
+    CreateGradeDtos: CreateGradeDto[],
   ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -55,6 +60,14 @@ export class ShowService {
           totalSeat: totalSeat,
         });
       }
+      for (const createGradeDto of CreateGradeDtos) {
+        const { seatGrades, price } = createGradeDto;
+        const gradeData = await queryRunner.manager.save(SeatGrade, {
+          showId: showData.id,
+          seatGrades,
+          price,
+        });
+      }
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -80,9 +93,7 @@ export class ShowService {
       throw new BadRequestException('등록된 공연 정보가 없습니다.');
     }
     console.log(data);
-    data.map((show) => {
-      id = show.id;
-    });
+
     // data.map((show) => {
     //   show.id, show.title, show.description, show.address, show.imgUrl;
     // });

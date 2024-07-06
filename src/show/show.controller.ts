@@ -20,8 +20,8 @@ import { Role } from 'src/user/types/userRole.type';
 import { Show } from './entities/show.entity';
 import { Category } from './entities/category.entity';
 import { CATEGORY } from './types/showRole.type';
+import { CreateGradeDto } from 'src/seat/dto/create-grade.dto';
 
-@UseGuards(RolesGuard)
 @Controller('shows')
 export class ShowController {
   constructor(private readonly showService: ShowService) {}
@@ -43,15 +43,20 @@ export class ShowController {
   async findByShowId(@Param('id') id: number) {
     return await this.showService.findByShowId(id);
   }
-
+  @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
   async createShow(
     @Body() createShowDto: CreateShowDto,
     @Body('schedule') createShowDateDtos: CreateShowDateDto[],
+    @Body('createGrade') createGradeDtos: CreateGradeDto[],
   ) {
     try {
-      await this.showService.createShow(createShowDto, createShowDateDtos);
+      await this.showService.createShow(
+        createShowDto,
+        createShowDateDtos,
+        createGradeDtos,
+      );
     } catch (error) {}
   }
 

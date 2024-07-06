@@ -12,6 +12,12 @@ import { Show } from './show/entities/show.entity';
 import { Category } from './show/entities/category.entity';
 import { Showdate } from './show/entities/showdate.entity';
 import { CategoryModule } from './category/category.module';
+import { TicketsModule } from './ticket/tickets.module';
+import { SeatsModule } from './seat/seats.module';
+import { SalesSeat } from './seat/entities/sales-seat.entity';
+import { PurchaseHistory } from './ticket/entities/purchase-history.entity';
+import { SeatGrade } from './seat/entities/seat-grade.entity';
+import { Ticket } from './ticket/entities/ticket.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -24,7 +30,16 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [User, Show, Category, Showdate],
+    entities: [
+      User,
+      Show,
+      Category,
+      Showdate,
+      SalesSeat,
+      PurchaseHistory,
+      SeatGrade,
+      Ticket,
+    ],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
@@ -50,6 +65,8 @@ const typeOrmModuleOptions = {
     UserModule,
     ShowModule,
     CategoryModule,
+    TicketsModule,
+    SeatsModule,
   ],
   controllers: [],
   providers: [],

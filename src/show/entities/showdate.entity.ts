@@ -5,8 +5,10 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Show } from './show.entity';
+import { SalesSeat } from 'src/seat/entities/sales-seat.entity';
 
 @Entity({
   name: 'showdates',
@@ -27,7 +29,10 @@ export class Showdate {
   @DeleteDateColumn()
   deletedAt?: Date | null;
 
-  @ManyToOne(() => Show, (show) => show.showdates)
-  @JoinColumn()
+  @ManyToOne(() => Show, (show) => show.showdates, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'show_id' })
   show: Show;
+
+  @OneToMany(() => SalesSeat, (salesSeats) => salesSeats.showdate)
+  salesSeats: SalesSeat[];
 }

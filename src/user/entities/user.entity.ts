@@ -8,6 +8,8 @@ import {
 } from 'typeorm';
 
 import { Role } from '../types/userRole.type';
+import { Ticket } from 'src/ticket/entities/ticket.entity';
+import { PurchaseHistory } from 'src/ticket/entities/purchase-history.entity';
 
 @Index('email', ['email'], { unique: true })
 @Entity({
@@ -37,4 +39,13 @@ export class User {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
+
+  @OneToMany(() => Ticket, (tickets) => tickets.user)
+  tickets: Ticket[];
+
+  @OneToMany(
+    () => PurchaseHistory,
+    (purchaseHistories) => purchaseHistories.user,
+  )
+  purchaseHistories: PurchaseHistory[];
 }

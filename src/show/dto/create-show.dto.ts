@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsEnum, IsString } from 'class-validator';
+import { IsNotEmpty, IsEnum, IsString } from 'class-validator';
 import { CATEGORY } from '../types/showRole.type';
 
 export class CreateShowDto {

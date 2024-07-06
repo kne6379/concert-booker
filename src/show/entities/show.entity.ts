@@ -9,6 +9,8 @@ import {
 } from 'typeorm';
 import { Category } from './category.entity';
 import { Showdate } from './showdate.entity';
+import { SeatGrade } from 'src/seat/entities/seat-grade.entity';
+import { Ticket } from 'src/ticket/entities/ticket.entity';
 
 @Entity({
   name: 'shows',
@@ -39,6 +41,12 @@ export class Show {
   @JoinColumn()
   category: Category;
 
-  @OneToMany(() => Showdate, (showdate) => showdate.show)
+  @OneToMany(() => Showdate, (showdates) => showdates.show)
   showdates: Showdate[];
+
+  @OneToMany(() => SeatGrade, (seatGrades) => seatGrades.show)
+  seatGrades: SeatGrade[];
+
+  @OneToMany(() => Ticket, (tickets) => tickets.show)
+  tickets: Ticket[];
 }

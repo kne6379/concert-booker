@@ -23,14 +23,22 @@ export class SalesSeat {
   @Column({ type: 'int', nullable: false })
   seatgradeId: number;
 
-  @OneToOne(() => Ticket, (ticket) => ticket.salesSeat)
+  @Column({ type: 'int', nullable: true })
+  ticketId: number;
+
+  @OneToOne(() => Ticket, (ticket) => ticket.salesSeat, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'ticket_id' })
   ticket: Ticket;
 
-  @ManyToOne(() => Showdate, (showdate) => showdate.salesSeats)
+  @ManyToOne(() => Showdate, (showdate) => showdate.salesSeats, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'showdate_id' })
   showdate: Showdate;
 
-  @ManyToOne(() => SeatGrade, (seatGrade) => seatGrade.salesSeats)
+  @ManyToOne(() => SeatGrade, (seatGrade) => seatGrade.salesSeats, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'seatgrade_id' })
   seatGrade: SeatGrade;
 }

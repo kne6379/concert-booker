@@ -30,11 +30,15 @@ export class PurchaseHistory {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @OneToOne(() => Ticket, (ticket) => ticket.purchaseHistory)
+  @OneToOne(() => Ticket, (ticket) => ticket.purchaseHistory, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'ticket_id' })
   ticket: Ticket;
 
-  @ManyToOne(() => User, (user) => user.purchaseHistories)
+  @ManyToOne(() => User, (user) => user.purchaseHistories, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 }

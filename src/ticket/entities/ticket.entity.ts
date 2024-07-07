@@ -28,18 +28,23 @@ export class Ticket {
   @Column({ type: 'int', nullable: false })
   salesSeatId: number;
 
-  @OneToOne(() => SalesSeat, (salesSeat) => salesSeat.ticket)
-  @JoinColumn({ name: 'sales_seat_id' })
+  @OneToOne(() => SalesSeat, (salesSeat) => salesSeat.ticket, {
+    onDelete: 'CASCADE',
+  })
   salesSeat: SalesSeat;
 
-  @OneToOne(() => PurchaseHistory, (purchaseHistory) => purchaseHistory.ticket)
+  @OneToOne(
+    () => PurchaseHistory,
+    (purchaseHistory) => purchaseHistory.ticket,
+    { onDelete: 'CASCADE' },
+  )
   purchaseHistory: PurchaseHistory;
 
-  @ManyToOne(() => User, (user) => user.tickets)
+  @ManyToOne(() => User, (user) => user.tickets, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Show, (show) => show.tickets)
+  @ManyToOne(() => Show, (show) => show.tickets, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'show_id' })
   show: Show;
 }

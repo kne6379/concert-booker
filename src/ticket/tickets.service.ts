@@ -11,6 +11,8 @@ import { Show } from 'src/show/entities/show.entity';
 import { Showdate } from 'src/show/entities/showdate.entity';
 import { SeatGrade } from 'src/seat/entities/seat-grade.entity';
 import { User } from 'src/user/entities/user.entity';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
 
 @Injectable()
 export class TicketsService {
@@ -23,6 +25,8 @@ export class TicketsService {
     private readonly purchaseRepository: Repository<PurchaseHistory>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRedis()
+    private readonly client: Redis,
     private dataSource: DataSource,
   ) {}
   async buyTicket(
@@ -37,6 +41,7 @@ export class TicketsService {
     try {
       const { title, showDate, seatGrades } = salesSeatDto;
       const { id } = await queryRunner.manager.findOneBy(Show, { title });
+
       if (_.isNil(id)) {
         throw new BadRequestException('존재하지 않는 공연입니다.');
       }
@@ -45,20 +50,24 @@ export class TicketsService {
         showDate,
       }); // 일정 정보 조회
 
-      if (_.isNil(showDate)) {
+      if (_.isNil(showdateData)) {
         throw new BadRequestException('존재하지 않는 공연 일정입니다.');
       }
-      const seatGrade = await queryRunner.manager.findOneBy(SeatGrade, {
+      const seatGradeData = await queryRunner.manager.findOneBy(SeatGrade, {
         showId: id,
         seatGrades,
       });
-      if (_.isNil(seatGrade)) {
+      if (_.isNil(seatGradeData)) {
         throw new BadRequestException('존재하지 않는 공연 등급입니다.');
       }
+      const salesSeatData = await queryRunner.manager.find(SalesSeat, {
+        where: { showdateId: showdateData.id },
+      });
+      console.log(salesSeatData);
       // 판매 좌석 정보 저장
       const salesSeat = await queryRunner.manager.save(SalesSeat, {
         showdateId: showdateData.id,
-        seatgradeId: seatGrade.id,
+        seatgradeId: seatGradeData.id,
       });
 
       const ticket = await queryRunner.manager.save(Ticket, {
@@ -70,10 +79,10 @@ export class TicketsService {
       const purchaseHistory = await queryRunner.manager.save(PurchaseHistory, {
         userId,
         ticketId: ticket.id,
-        ticketPrice: seatGrade.price,
+        ticketPrice: seatGradeData.price,
       }); // 구매 내역 생성
 
-      const point = userPoint - seatGrade.price;
+      const point = userPoint - seatGradeData.price;
       if (point < 0) {
         throw new BadRequestException('잔액이 부족합니다.');
       }
@@ -84,6 +93,9 @@ export class TicketsService {
         { point },
       ); // 잔액 정보 업데이트
 
+      await this.client.set(`user:${userId}:points`, point);
+      await this.client.set(`ticket:${ticket.id}`, JSON.stringify(ticket));
+
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -92,4 +104,35 @@ export class TicketsService {
       await queryRunner.release();
     }
   }
+
+  async showTickets(userId: number) {
+    let ticketData = await this.ticketRepository.find({
+      where: { userId },
+      select: {},
+      relations: [
+        'show',
+        'salesSeat.seatGrade',
+        'salesSeat.showdate',
+        'purchaseHistory',
+      ],
+    });
+
+    const data = ticketData.map((ticket) => {
+      return {
+        title: ticket.show.title,
+        price: ticket.purchaseHistory.ticketPrice,
+        seatGrade: ticket.salesSeat.seatGrade.seatGrades,
+        date: ticket.salesSeat.showdate.showDate,
+        address: ticket.show.address,
+      };
+    });
+    return data;
+  }
 }
+// return {
+//     title: ticket.show.title,
+//     price: ticket.purchaseHistory.ticketPrice,
+//     seatGrade: {
+//       grade: ticket.salesSeat.seatGrade.grade,
+//       price: ticket.salesSeat.seatGrade.price,
+//     },

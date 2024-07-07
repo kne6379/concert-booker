@@ -18,6 +18,9 @@ import { SalesSeat } from './seat/entities/sales-seat.entity';
 import { PurchaseHistory } from './ticket/entities/purchase-history.entity';
 import { SeatGrade } from './seat/entities/seat-grade.entity';
 import { Ticket } from './ticket/entities/ticket.entity';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { AppController } from './app.controller';
+import { RedisModuleOptions } from '@nestjs-modules/ioredis';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -58,9 +61,23 @@ const typeOrmModuleOptions = {
         DB_PORT: Joi.number().required(),
         DB_NAME: Joi.string().required(),
         DB_SYNC: Joi.boolean().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
+        REDIS_PASSWORD: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+    RedisModule.forRootAsync({
+      useFactory: async (configService: ConfigService) => ({
+        readyLog: true,
+        config: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+          password: configService.get('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     AuthModule,
     UserModule,
     ShowModule,
@@ -70,5 +87,6 @@ const typeOrmModuleOptions = {
   ],
   controllers: [],
   providers: [],
+  exports: [RedisModule],
 })
 export class AppModule {}

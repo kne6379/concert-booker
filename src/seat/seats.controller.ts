@@ -10,6 +10,8 @@ export class SeatsController {
     try {
       const { showDate, title } = availableSeatDto;
       return await this.seatService.availableSeat(showDate, title);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

@@ -69,6 +69,7 @@ export class SeatsService {
         (seat) => !soldSeats.includes(seat),
       );
     }
+    console.log(remainingSeats);
     return remainingSeats;
   }
 }

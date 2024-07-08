@@ -21,6 +21,9 @@ export class SalesSeat {
   showdateId: number;
 
   @Column({ type: 'int', nullable: false })
+  seatNumber: number;
+
+  @Column({ type: 'int', nullable: false })
   seatgradeId: number;
 
   @Column({ type: 'int', nullable: true })

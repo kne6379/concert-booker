@@ -20,6 +20,9 @@ export class SeatGrade {
   @Column({ type: 'int' })
   showId: number;
 
+  @Column({ type: 'int', nullable: false })
+  gradeSeatCount: number;
+
   @Column({ type: 'enum', enum: SEAT_GRADES })
   seatGrades: SEAT_GRADES;
 

@@ -8,13 +8,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
-import { Roles } from 'src/auth/roles.decorator';
-import { Role } from 'src/user/types/userRole.type';
 import { SalesSeatDto } from 'src/seat/dto/sales-seat.dto';
 import { User } from 'src/user/entities/user.entity';
-import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UserInfo } from 'src/utils/userInfo.decorator';
+import { Response } from 'express';
 
 @UseGuards(RolesGuard)
 @Controller('tickets')
@@ -26,7 +24,10 @@ export class TicketsController {
     try {
       const { id, point } = user;
       const data = await this.ticketsService.buyTicket(salesSeatDto, id, point);
-    } catch (error) {}
+      return data;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Get() // 예매 정보 조회
@@ -38,7 +39,7 @@ export class TicketsController {
     } catch (error) {}
   }
 
-  @Delete(':ticketId')
+  @Delete(':ticketId') // 티켓 삭제
   async deleteTicket(
     @UserInfo() user: User,
     @Param('ticketId') ticketId: number,
@@ -46,7 +47,7 @@ export class TicketsController {
     try {
       const { id, point } = user;
       const data = await this.ticketsService.deleteTicket(id, point, ticketId);
-      return data;
+      return;
     } catch (error) {}
   }
 }

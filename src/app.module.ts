@@ -18,7 +18,7 @@ import { SalesSeat } from './seat/entities/sales-seat.entity';
 import { PurchaseHistory } from './ticket/entities/purchase-history.entity';
 import { SeatGrade } from './seat/entities/seat-grade.entity';
 import { Ticket } from './ticket/entities/ticket.entity';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
+// import { RedisModule } from '@liaoliaots/nestjs-redis';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -65,17 +65,17 @@ const typeOrmModuleOptions = {
       }),
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
-    RedisModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => ({
-        readyLog: true,
-        config: {
-          host: configService.get('REDIS_HOST'),
-          port: configService.get('REDIS_PORT'),
-          password: configService.get('REDIS_PASSWORD'),
-        },
-      }),
-      inject: [ConfigService],
-    }),
+    // RedisModule.forRootAsync({
+    //   useFactory: async (configService: ConfigService) => ({
+    //     readyLog: true,
+    //     config: {
+    //       host: configService.get('REDIS_HOST'),
+    //       port: configService.get('REDIS_PORT'),
+    //       password: configService.get('REDIS_PASSWORD'),
+    //     },
+    //   }),
+    //   inject: [ConfigService],
+    // }),
     AuthModule,
     UserModule,
     ShowModule,

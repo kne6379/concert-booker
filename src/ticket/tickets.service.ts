@@ -11,8 +11,6 @@ import { Show } from 'src/show/entities/show.entity';
 import { Showdate } from 'src/show/entities/showdate.entity';
 import { SeatGrade } from 'src/seat/entities/seat-grade.entity';
 import { User } from 'src/user/entities/user.entity';
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import Redis from 'ioredis';
 
 @Injectable()
 export class TicketsService {

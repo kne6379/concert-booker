@@ -8,9 +8,7 @@ import { SalesSeat } from 'src/seat/entities/sales-seat.entity';
 import { User } from 'src/user/entities/user.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Ticket, PurchaseHistory, SalesSeat, User]),
-  ],
+  imports: [TypeOrmModule.forFeature([Ticket])],
   providers: [TicketsService],
   controllers: [TicketsController],
 })

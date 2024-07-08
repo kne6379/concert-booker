@@ -9,4 +9,8 @@ export class CreateGradeDto {
   @IsNumber()
   @IsNotEmpty({ message: '좌석 가격을 입력해주세요.' })
   price: number;
+
+  @IsNumber()
+  @IsNotEmpty({ message: '좌석 가격을 입력해주세요.' })
+  gradeSeatCount: number;
 }

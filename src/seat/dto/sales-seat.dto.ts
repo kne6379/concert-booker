@@ -19,6 +19,10 @@ export class SalesSeatDto {
   showDate: Date;
 
   @IsEnum(SEAT_GRADES)
-  @IsNotEmpty({ message: '좌석 등급을 정확히 입력해주세요.' })
+  @IsNotEmpty({ message: '좌석 등급을 입력해주세요.' })
   seatGrades: SEAT_GRADES;
+
+  @IsNumber()
+  @IsNotEmpty({ message: '좌석 번호를 입력해주세요.' })
+  seatNumber: number;
 }

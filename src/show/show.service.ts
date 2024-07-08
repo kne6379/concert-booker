@@ -51,7 +51,6 @@ export class ShowService {
         description: createShowDto.description,
         categoryId: category.id,
       });
-
       for (const createShowDateDto of createShowDateDtos) {
         const { showDate, totalSeat } = createShowDateDto;
         const scheduleData = await queryRunner.manager.save(Showdate, {
@@ -61,11 +60,12 @@ export class ShowService {
         });
       }
       for (const createGradeDto of CreateGradeDtos) {
-        const { seatGrades, price } = createGradeDto;
+        const { seatGrades, price, gradeSeatCount } = createGradeDto;
         const gradeData = await queryRunner.manager.save(SeatGrade, {
           showId: showData.id,
           seatGrades,
           price,
+          gradeSeatCount,
         });
       }
       await queryRunner.commitTransaction();

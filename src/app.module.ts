@@ -19,8 +19,6 @@ import { PurchaseHistory } from './ticket/entities/purchase-history.entity';
 import { SeatGrade } from './seat/entities/seat-grade.entity';
 import { Ticket } from './ticket/entities/ticket.entity';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { AppController } from './app.controller';
-import { RedisModuleOptions } from '@nestjs-modules/ioredis';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -87,6 +85,6 @@ const typeOrmModuleOptions = {
   ],
   controllers: [],
   providers: [],
-  exports: [RedisModule],
+  exports: [],
 })
 export class AppModule {}

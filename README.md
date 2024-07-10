@@ -2,7 +2,7 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-## ERD와 API 명세서 
+## ERD + API 명세서 + 트러블슈팅
 
 https://stephenoeul.notion.site/af9d083846824aea92879c71c0a3b4f5?pvs=4
 
@@ -19,8 +19,6 @@ https://stephenoeul.notion.site/af9d083846824aea92879c71c0a3b4f5?pvs=4
 7. 예매 취소 : 판매 좌석, 금액 로그, 티켓 삭제 -> 결제된 금액 반환, 트랜잭션으로 이뤄진다.  
 8. 동시성 처리 : 트랜잭션 isolation Level : SERIALIZABLE 설정,
 
-## 트러블 슈팅 
-추가예정 
 
 ## 아쉬움
 
@@ -29,6 +27,9 @@ https://stephenoeul.notion.site/af9d083846824aea92879c71c0a3b4f5?pvs=4
  3. 복잡한 코드 : 너무 길게 작성된 코드, 남이 보기에 읽기 어려울 것 같다.
  4. 캐시 : 전체 좌석 예매 정보를 Redis에 저장한 뒤 사용자에게 반환하여 캐시 데이터로 사용하고 싶었는데 구현하지 못했다. 매번 다시 데이터를 계산하는 로직을 작성했다.
  5. 데이터베이스에 UTC 기준으로 시간이 저장되고 있는 것 같다. 데이터베이스 설정을 통해 한국 시간으로 통일시키고 싶다. 
+
+## 피드백 반영
+추가예정 
 
 ## 해보고 싶은 것 
 - [ ] 커스텀 제너레이터
